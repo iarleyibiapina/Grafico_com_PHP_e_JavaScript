@@ -1,3 +1,22 @@
+<?php
+require_once './db.php';
+
+// 
+$stmt = $pdo->prepare("SELECT
+g.id AS grupo_id,
+g.grupo,
+v.id AS valor_id,
+v.valor_1,
+v.valor_2,
+v.valor_3
+FROM
+grupos g
+JOIN
+valores v ON g.id = v.id_grupo;");
+$results = $stmt->execute();
+$results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+// 
+?>
 <html>
 
 <head>
@@ -11,9 +30,9 @@
         function drawChart() {
             var data = google.visualization.arrayToDataTable([
                 ["Votação", "Azul", "Vermelho", "Amarelo"],
-                ['valor', 1, 2, 3],
-                ['valor', 1, 2, 3],
-                ['valor', 1, 2, 3]
+                <?php for ($i = 0; $i < count($results); $i++) {
+                    echo "['" . $results[$i]['grupo'] . "'," . $results[$i]['valor_1'] . "," . $results[$i]['valor_2'] . "," . $results[$i]['valor_3'] . "],";
+                } ?>
             ]);
 
             var options = {
